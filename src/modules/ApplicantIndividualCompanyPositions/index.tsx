@@ -39,7 +39,6 @@ const ApplicantIndividualCompanyPositions = () => {
   );
 
   const onChange = useCallback((data: TChangeData) => {
-    console.log(onChange);
     dispatch(actions.updateData(data));
     dispatch(actions.setErrorText({ positions: '' }));
   }, []);
