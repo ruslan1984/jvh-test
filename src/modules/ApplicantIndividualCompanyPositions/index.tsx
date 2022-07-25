@@ -5,10 +5,12 @@ import CustomSelect, {
   TChangeData,
   TItemWithNew,
 } from '../../components/CustomSelect';
+import {
+  usePositionsQuery,
+  ApplicantIndividualCompanyPosition,
+} from '../../graphql/generated';
 import { gql } from '@apollo/client';
 import { actions } from '../../forms/Main/reducer';
-import { ApplicantIndividualCompanyPosition } from '../../graphql/generated';
-import { data } from './__mock__';
 import { reducerType } from '../../store/reducers';
 
 gql`
@@ -29,13 +31,20 @@ const ApplicantIndividualCompanyPositions = () => {
     errors: { positions: positionsErrors },
   } = useSelector((state: reducerType) => state.customSelect);
 
-  const list: TCustomSelectItem[] = useMemo(
+  const { data: getData, loading } = usePositionsQuery();
+
+  const data: ApplicantIndividualCompanyPosition[] | undefined = useMemo(
+    () => getData?.applicantIndividualCompanyPositions?.data,
+    [getData]
+  );
+
+  const list: TCustomSelectItem[] | undefined = useMemo(
     () =>
-      data.map((item: ApplicantIndividualCompanyPosition) => ({
+      data?.map((item: ApplicantIndividualCompanyPosition) => ({
         id: Number(item.id),
         label: item.name,
       })),
-    []
+    [data]
   );
 
   const onChange = useCallback((data: TChangeData) => {
@@ -57,6 +66,7 @@ const ApplicantIndividualCompanyPositions = () => {
       name="positions"
       list={list}
       title="ApplicantIndividualCompanyPositions"
+      loading={loading}
     />
   );
 };

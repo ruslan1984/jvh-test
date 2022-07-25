@@ -1,4 +1,4 @@
-import React, { FC, FormEvent } from 'react';
+import React, { FC, FormEvent, memo } from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
@@ -17,6 +17,7 @@ interface IPresenter {
   name: string;
   undoBtnDisabled?: boolean;
   multiple?: boolean;
+  loading?: boolean;
   add: (e: FormEvent) => void;
   remove: () => void;
   onChangeAddInput: (e: FormEvent) => void;
@@ -39,6 +40,7 @@ const Presenter: FC<IPresenter> = ({
   title,
   undoBtnDisabled = false,
   multiple = false,
+  loading,
   errorText = '',
   name,
 }: IPresenter) => (
@@ -52,6 +54,8 @@ const Presenter: FC<IPresenter> = ({
   >
     <Autocomplete
       id={name}
+      loading={true}
+      loadingText="Loading..."
       multiple={multiple}
       value={currentValue ?? (multiple ? [] : null)}
       autoSelect
@@ -99,4 +103,4 @@ const Presenter: FC<IPresenter> = ({
   </Box>
 );
 
-export default Presenter;
+export default memo(Presenter);

@@ -1,7 +1,10 @@
 import React, { memo, useCallback, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { gql } from '@apollo/client';
-import { ApplicantIndividualCompanyRelation } from '../../graphql/generated';
+import {
+  useRelationsQuery,
+  ApplicantIndividualCompanyRelation,
+} from '../../graphql/generated';
 import CustomSelect, {
   TChangeData,
   TCustomSelectItem,
@@ -9,7 +12,6 @@ import CustomSelect, {
 } from '../../components/CustomSelect';
 import { reducerType } from '../../store/reducers';
 import { actions } from '../../forms/Main/reducer';
-import { data } from './__mock__';
 
 gql`
   query Relations {
@@ -28,21 +30,28 @@ const ApplicantIndividualCompanyRelations = () => {
   const {
     errors: { relations: relationsErrors },
   } = useSelector((state: reducerType) => state.customSelect);
-  //const {data,loading} = useRelationssQuery();
 
-  const list: TCustomSelectItem[] = useMemo(
+  const { data: getData, loading } = useRelationsQuery();
+
+  const data: ApplicantIndividualCompanyRelation[] | undefined = useMemo(
+    () => getData?.applicantIndividualCompanyRelations?.data,
+    [getData]
+  );
+
+  const list: TCustomSelectItem[] | undefined = useMemo(
     () =>
-      data.map((item: ApplicantIndividualCompanyRelation) => ({
+      data?.map((item: ApplicantIndividualCompanyRelation) => ({
         id: Number(item.id),
         label: item.name,
       })),
-    []
+    [data]
   );
 
   const onChange = useCallback((data: TChangeData) => {
     dispatch(actions.updateData(data));
     dispatch(actions.setErrorText({ relations: '' }));
   }, []);
+
   const addValueToList = useCallback((data: TItemWithNew) => {
     dispatch(actions.setErrorText({ relations: '' }));
     //Отправка новых данных на бэк
@@ -55,6 +64,7 @@ const ApplicantIndividualCompanyRelations = () => {
       list={list}
       title="ApplicantIndividualCompanyRelations"
       addValueToList={addValueToList}
+      loading={loading}
     />
   );
 };

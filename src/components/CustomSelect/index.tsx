@@ -13,17 +13,19 @@ import { TCustomSelectItem, TItemWithNew, TChangeData } from './types';
 
 interface ICustomSelect {
   name: string;
-  list: TCustomSelectItem[];
+  list?: TCustomSelectItem[];
   title: string;
   errorText?: string;
   multiple?: boolean;
+  loading?: boolean;
   onChange: ({ name, value }: TChangeData) => void;
   addValueToList?: (data: TCustomSelectItem) => void;
 }
 
 export const CustomSelect: FC<ICustomSelect> = ({
-  list,
+  list = [],
   multiple,
+  loading,
   title,
   name,
   onChange,
@@ -36,7 +38,7 @@ export const CustomSelect: FC<ICustomSelect> = ({
   const [currentValue, setCurrentValue] = useState<
     TItemWithNew | TItemWithNew[] | null
   >();
-  const [currentList, setCurrentList] = useState<TItemWithNew[]>([]);
+  const [currentList, setCurrentList] = useState<TItemWithNew[]>(list);
   const [addInputText, setAddInputText] = useState('');
   const [addInputError, setAddInputError] = useState(false);
 
@@ -137,6 +139,7 @@ export const CustomSelect: FC<ICustomSelect> = ({
       onChangeAddInput={onChangeAddInput}
       onChangeSelect={onChangeSelect}
       multiple={multiple}
+      loading={loading}
     />
   );
 };
