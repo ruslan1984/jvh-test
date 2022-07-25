@@ -45,6 +45,7 @@ const ApplicantIndividualCompanyPositions = () => {
 
   const addValueToList = useCallback((data: TItemWithNew) => {
     dispatch(actions.setErrorText({ positions: '' }));
+    //Отправка новых данных на бэк
   }, []);
 
   return (
